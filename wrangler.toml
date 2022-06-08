@@ -1,4 +1,4 @@
-name = "cstools"
+name = "api"
 type = "javascript"
 zone_id = ""
 account_id = "1bda26fe457ea7a9dcd193e268e07770"
@@ -9,8 +9,3 @@ compatibility_date = "2022-04-01"
 command = "npm install && npm run build"
 [build.upload]
 format = "service-worker"
-
-[vars]
-FACEIT_KEY = "16bdcadc-0331-4ab3-8319-0eb4c62e5056"
-STEAM_KEY = "FFD3B3558ED6FA5B185974419E2BE823"
-GITHUB_KEY = "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"
