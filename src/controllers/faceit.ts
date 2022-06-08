@@ -13,7 +13,7 @@ export const get = async (_req: Request, ctx: Context) => {
   const username = ctx.url.searchParams.get('username');
   const game = ctx.url.searchParams.get('game');
 
-  if (!id && !username) return reply(422, {errors: 'Username and ID required'});
+  if (!id || !username) return reply(422, {errors: 'Username or ID required'});
 
   const profile = username ?
     await FaceitClient.players.get({nickname: username}) :
