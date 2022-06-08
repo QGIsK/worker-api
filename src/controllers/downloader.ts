@@ -2,7 +2,6 @@ import type {Context} from 'worktop';
 import {reply} from 'worktop/response';
 import {digest} from 'worktop/crypto';
 
-
 export const image = async (_req: Request, ctx: Context) => {
   const url = ctx.url.searchParams.get('url');
 
@@ -14,7 +13,6 @@ export const image = async (_req: Request, ctx: Context) => {
   const res = await fetch(url);
   if (!res || res.status !== 200) return reply(422, {errors: 'Bad request'});
 
-
   const original = await res.blob();
 
   const response = new Response(original);
@@ -23,11 +21,18 @@ export const image = async (_req: Request, ctx: Context) => {
   const gif = ext === 'gif';
 
   // eslint-disable-next-line no-nested-ternary
-  const mimeType = gif ? 'image/gif' : ext === 'jpg' ? 'image/jpeg' : 'image/png';
+  const mimeType = gif ?
+    'image/gif' :
+    ext === 'jpg' ?
+    'image/jpeg' :
+    'image/png';
 
   const key = await digest('MD5', url);
 
-  response.headers.append('Content-Disposition', `attachment; filename="${key}"`);
+  response.headers.append(
+      'Content-Disposition',
+      `attachment; filename="${key}"`,
+  );
   response.headers.append('Content-Type', mimeType);
   response.headers.append(
       'Cache-Control',

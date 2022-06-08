@@ -11,6 +11,14 @@ import * as DownloaderController from '~/controllers/downloader';
 const API = new Router();
 API.prepare = Cache.sync();
 
+declare global {
+  /* eslint-disable no-unused-vars */
+  const FACEIT_KEY: string;
+  const STEAM_KEY: string;
+  const GITHUB_KEY: string;
+  /* eslint-enable no-unused-vars */
+}
+
 /**
  * Handles `OPTIONS` requests using the same settings.
  * NOTE: Call `CORS.preflight` per-route for individual settings.

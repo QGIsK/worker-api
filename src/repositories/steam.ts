@@ -5,7 +5,6 @@ import type {SteamProfile} from 'types/models/steam';
 // const client = new SteamResolver((...args: any) => fetch(...args));
 const apiBase = 'http://api.steampowered.com';
 
-
 export const getFromVanityURL = async (
     steamCustom: string,
 ): Promise<string> => {
@@ -20,7 +19,6 @@ export const getFromVanityURL = async (
   return json.response.steamid;
 };
 
-
 export const getSteamProfile = async (
     steamID: string,
 ): Promise<SteamProfile | undefined> => {
@@ -31,7 +29,6 @@ export const getSteamProfile = async (
   const json: { response: { players: SteamProfile[] } } = await res.json();
   return json.response.players[0];
 };
-
 
 export const fromCustom = async (persona: string) => {
   const parsedPersona = parseParams(persona);
@@ -50,4 +47,3 @@ const parseParams = (param: string) => {
   }
   return param;
 };
-

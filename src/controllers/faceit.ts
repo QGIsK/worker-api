@@ -1,6 +1,8 @@
 import type {Context} from 'worktop';
 import {reply} from 'worktop/response';
 
+import * as Cache from '~/helpers/cache';
+
 // @ts-ignore
 import FaceitAPI from '@cstools-app/faceit-wrapper';
 
@@ -13,7 +15,7 @@ export const get = async (_req: Request, ctx: Context) => {
   const username = ctx.url.searchParams.get('username');
   const game = ctx.url.searchParams.get('game');
 
-  if (!id || !username) return reply(422, {errors: 'Username or ID required'});
+  if (!id && !username) return reply(422, {errors: 'Username or ID required'});
 
   const profile = username ?
     await FaceitClient.players.get({nickname: username}) :
@@ -21,7 +23,9 @@ export const get = async (_req: Request, ctx: Context) => {
 
   const gameIndex = game ? game : 'csgo';
 
-  if (profile.errors || !profile.games[gameIndex]) return reply(404, 'Player statistics not found');
+  if (profile.errors || !profile.games[gameIndex]) {
+    return reply(404, 'Player statistics not found');
+  }
 
   const skillLevel = profile.games[gameIndex].skill_level;
   const elo = profile.games[gameIndex].faceit_elo;
@@ -29,14 +33,17 @@ export const get = async (_req: Request, ctx: Context) => {
   const icon = buildIconUrl(profile.games[gameIndex].skill_level);
   const profileUrl = buildProfileUrl('en/players', profile.nickname);
 
-  return reply(200, {
-    skillLevel,
-    elo,
-    icon,
-    profileUrl,
-  });
+  return reply(
+      200,
+      {
+        skillLevel,
+        elo,
+        icon,
+        profileUrl,
+      },
+      Cache.hour,
+  );
 };
-
 
 const buildIconUrl = (level: String) =>
   `https://cdn.demiann.dev/images/faceit/levels/level${level}.svg`;

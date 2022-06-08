@@ -9,6 +9,8 @@ import type {
 import * as cheerio from 'cheerio';
 import {reply} from 'worktop/response';
 
+import * as Cache from '~/helpers/cache';
+
 export const pinned = async (_req: Request, ctx: Context) => {
   const username = ctx.url.searchParams.get('username');
 
@@ -23,7 +25,6 @@ export const pinned = async (_req: Request, ctx: Context) => {
 
     const items: PinnedList = [];
 
-
     $('.js-pinned-item-list-item').each((_i, elem) => {
       const basic = simpleParsed($, elem);
 
@@ -31,7 +32,7 @@ export const pinned = async (_req: Request, ctx: Context) => {
       items.push(item);
     });
 
-    return reply(200, items);
+    return reply(200, items, Cache.month);
   } catch (_err) {
     return reply(404, 'Profile cannot be found.');
   }
@@ -60,10 +61,11 @@ export const pinnedDetails = async (_req: Request, ctx: Context) => {
       items.push(item);
     });
 
-    const detailedItemsPromises: Promise<PinnedItemDetailed>[] = await getDetailed(items);
+    const detailedItemsPromises: Promise<PinnedItemDetailed>[] =
+      await getDetailed(items);
     // TODO :: Refactor this
     const detailedItems = await Promise.all(detailedItemsPromises);
-    return reply(200, detailedItems);
+    return reply(200, detailedItems, Cache.week);
   } catch (_err) {
     return reply(404, 'Profile cannot be found.');
   }

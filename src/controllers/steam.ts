@@ -3,17 +3,19 @@ import {reply} from 'worktop/response';
 
 import {getSteamProfile, fromCustom} from '~/repositories/steam';
 
+import * as Cache from '~/helpers/cache';
+
 export const get = async (_req: Request, ctx: Context) => {
   const id = ctx.url.searchParams.get('id');
   const customUrl = ctx.url.searchParams.get('customUrl');
 
-  if (!id && !customUrl) return reply(422, {errors: 'id or customURL required'});
+  if (!id && !customUrl) {
+    return reply(422, {errors: 'id or customURL required'});
+  }
 
-  const profile = id ?
-    await getSteamProfile(id) :
-    await fromCustom(customUrl!);
+  const profile = id ? await getSteamProfile(id) : await fromCustom(customUrl!);
 
-  return reply(200, profile);
+  return reply(200, profile, Cache.month);
 };
 
 export const transform = async (_req: Request, ctx: Context) => {
@@ -43,7 +45,6 @@ export const transform = async (_req: Request, ctx: Context) => {
 
   // return reply(200, {groupId, url: buildSteamPath('gid', groupId as string)});
 };
-
 
 // const buildSteamPath = (type: String, path: String | Number) =>
 //   `https://steamcommunity.com/${type}/${path}`;
